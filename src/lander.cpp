@@ -26,8 +26,6 @@
 // vertices so that the lander is centred at (0,0).
 
 
-
-
 void Lander::setupVAO()
 
 {
@@ -46,6 +44,7 @@ void Lander::setupVAO()
     if (v.y < min.y) min.y = v.y;
     if (v.y > max.y) max.y = v.y;
   }
+
 
   // number of segments in the lander model
 
@@ -67,22 +66,26 @@ void Lander::setupVAO()
     landerVerts[i+1] = newV.y / newV.w;
   }
 
+
+
   // ---- Create a VAO for this object ----
 
-  // YOUR CODE HERE
+	// YOUR CODE HERE	
+
+	// Set the Height and width of the lander	
+	height = max.y - min.y;
+	width  = max.x - min.x;
   
   glGenVertexArrays( 1, &VAO );
   glBindVertexArray( VAO );
 
   // Store the vertices
-
   GLuint VBO;
   glGenBuffers( 1, &VBO );
   glBindBuffer( GL_ARRAY_BUFFER, VBO );
   glBufferData( GL_ARRAY_BUFFER, 2*numSegments*sizeof(float), &landerVerts[0], GL_STATIC_DRAW );
 
   // define the position attribute
-
   glEnableVertexAttribArray( 0 );
   glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, 0 );
 }
@@ -153,6 +156,19 @@ void Lander::addThrust( float deltaT )
   
   // reduce the amount of fuel the lander has given that it is accelerating for deltaT seconds.
   fuel -= THRUST_FUEL_CONSUMPTION * deltaT;
+  
+  // orientation vector of unit length
+  vec3 orientationVec = vec3( -1 * sin(orientation), cos(orientation) , 0 );
+  
+  float magnitudeChange = THRUST_ACCEL * deltaT;
+  
+  // change the magnitude of the orientation vector given our velocity.
+  
+  orientationVec.x = orientationVec.x * magnitudeChange;
+  orientationVec.y = orientationVec.y * magnitudeChange;
+  
+  // apply velocity change to the velocity vector of the lander 
+  velocity = velocity + orientationVec;
   
   
   

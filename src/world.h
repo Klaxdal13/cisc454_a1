@@ -39,6 +39,8 @@ class World {
 
   void updateState( float elapsedTime );
 
+  int getAltitudeOfLanderFromLandscape();
+  
   void resetLander() {
     lander->reset();
   }

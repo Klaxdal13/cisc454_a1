@@ -16,8 +16,6 @@
 
 time_t TimeCodeStarted = time(0);
 
-
-
 void World::updateState( float elapsedTime )
 
 {
@@ -53,7 +51,32 @@ void World::updateState( float elapsedTime )
   // YOUR CODE HERE
 }
 
+int World::getAltitudeOfLanderFromLandscape()
+{
+	float landerx = lander->centrePosition().x;
+	float landery = lander->centrePosition().y;
+	
+	vec4 segUnderLander = landscape->segmentUnderLander(lander->centrePosition());
+	
+	float segmentStartX = segUnderLander.x;
+	float segmentStartY = segUnderLander.y;
+	float segmentEndX		= segUnderLander.z;
+	float segmentEndY   = segUnderLander.w;
+	
+	float ratio = (landerx - segmentStartX) / (segmentEndX - segmentStartX);
+	
+	float pointOnSegmentY = ((segmentEndY - segmentStartY) * ratio) + segmentStartY;
+	
+	float alt = landery - pointOnSegmentY;
+	
+	//cout<<"XPOS Of Lander: "<<lander->centrePosition().x <<"\n";
+	//cout<<"YPOS Of Lander: "<<lander->centrePosition().y <<"\n";
+	//cout<<"Seg Und Lander: "<<landscape->segmentUnderLander(lander->centrePosition()) <<"\n";
+	//cout<<"\n\n";
 
+	
+	return alt;
+}
 
 void World::draw()
 
@@ -126,7 +149,7 @@ void World::draw()
   stringstream alt;
   alt.setf( ios::fixed, ios::floatfield );
   alt.precision(0);
-  alt << "ALTITUDE:         " << lander->fuel;
+  alt << "ALTITUDE:         " << world->getAltitudeOfLanderFromLandscape();
   drawStrokeString( alt.str(), 0.25, 0.70, 0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
   
   // ADD Horizontal Speed TO SCREEN

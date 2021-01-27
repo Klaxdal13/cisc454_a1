@@ -33,6 +33,8 @@ class Landscape {
   void setupVAO();  
 
   void draw( mat4 &worldToViewTransform );
+  
+  
 
   float minX() { return 0; }
   float maxX() { return LANDSCAPE_WIDTH; }
@@ -40,6 +42,7 @@ class Landscape {
 
   vec3 findClosestPoint( vec3 position, vec3 segTail, vec3 segHead );
   vec3 findClosestPoint( vec3 position );
+  vec4 segmentUnderLander( vec3 position );
 };
 
 

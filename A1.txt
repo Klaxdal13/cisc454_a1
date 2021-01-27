@@ -62,7 +62,7 @@ HERE":
 		Modify Lander::draw() to draw the lander in the correct position and
    	orientation. [1 mark]
 
-5. 	
+5. DONE
 		Modify Lander::addThrust() to change the lander velocity.  Use
 		THRUST_ACCEL and the current lander orientation. [1 mark]
 
@@ -70,21 +70,22 @@ HERE":
 		Modify World::draw() to output text that shows the same information as
    	the original lunar lander game (search Google Images for this).  
    	There are six pieces of information: 
-   		Score,
+   		Score, DONE
 			Time, 
-			Fuel, 
-			Altitude (above the closest ground directly below), 
+			Fuel, DONE
+			Altitude (above the closest ground directly below), DONE
 			Horizontal speed (with an arrow),
    		Vertical speed (with an arrow). 		
    	[1 mark]
 
+		
    	You will need another function to calculate your altitude by finding
    	which landscape segment the lander is above, and calculating the
-   	distance from the *bottom* of the lander to that segment. [2 marks]
+   	distance from the *bottom* of the lander to that segment. [2 marks] DONE
 
    	You will need to maintain the amount of fuel, and decrease it in
    	proportion to thrust (differently for main thrust and rotational
-   	thrust). [1 mark]
+   	thrust). [1 mark] DONE
 
 7. 	Modify World::updateState() to check for landing or collision.
    	Landing is successful if the vertical speed is less than 1 m/s and

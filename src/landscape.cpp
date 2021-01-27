@@ -120,8 +120,41 @@ vec3 Landscape::findClosestPoint( vec3 position, vec3 segTail, vec3 segHead )
   // range.
 
   // YOUR CODE HERE
+  float pointOnLineX = 0;
+  float pointOnLineY = 0;
+  
+  float segHeadX = segHead.x;
+  float segHeadY = segHead.y;
+  
+  float segTailX = segTail.x;
+  float segTailY = segTail.y;
+  
+  float landerX = position.x;
+  float landerY = position.y;
+  
+  vec3 vecTailToHead 	 = vec3( segHeadX - segTailX, segHeadY - segTailY, 0 );
+  vec3 vecTailToLander = vec3(  landerX - segTailX,  landerY - segTailY, 0 );
+  
+  vec3 vecTailToHeadNormalized = vecTailToHead.normalize(); 
+  
+  float projectTailToLanderOntoTailToHead = (vecTailToHeadNormalized.x * vecTailToLander.x) + (vecTailToHeadNormalized.y * vecTailToLander.y);
+  
+  if(projectTailToLanderOntoTailToHead < 0)
+  {
+  	// The projection is behind the tail so return the tail
+  	return segTail;
+  }
+  else if(projectTailToLanderOntoTailToHead > vecTailToHead.length())
+  {
+    // Projection is further than the Head so return the point of the head of the segment
+  	return segHead;
+  }
+  else
+  {
+  
+  }
 
-  return vec3(0,0,0);
+  return vec3( pointOnLineX , pointOnLineY , 0 );
 }
 
 
@@ -151,6 +184,28 @@ vec3 Landscape::findClosestPoint( vec3 position )
   }
 
   return closestPoint;
+}
+
+vec4 Landscape::segmentUnderLander( vec3 position )
+{	
+	float segmentStartX = 0.0;
+	float segmentStartY = 0.0;
+	float segmentEndX		= 0.0;
+	float segmentEndY   = 0.0;
+	
+	float landerXLoc = position.x;
+	
+	for (int i=0; i<numVerts-1; i++) 
+	{
+		if( ( landscapeVerts[2*i] < landerXLoc ) && ( landerXLoc <  landscapeVerts[2*(i+1)]) )
+		{
+			segmentStartX = landscapeVerts[2*i];
+			segmentStartY = landscapeVerts[2*i+1];
+			segmentEndX		= landscapeVerts[2*(i+1)];
+			segmentEndY   = landscapeVerts[2*(i+1)+1];
+		}
+  }
+	return vec4( segmentStartX , segmentStartY , segmentEndX , segmentEndY );
 }
 
 
