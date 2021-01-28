@@ -18,6 +18,7 @@ time_t TimeCodeStarted = time(0);
 float dist = 0.0;
 int crash = -1;
 float crashRadius = 0.0;
+struct timeb newTime;
 
 void World::updateState( float elapsedTime )
 
@@ -152,14 +153,15 @@ void World::draw()
   drawStrokeString( ss.str(), -0.95, 0.70, 0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
   
   //Calculate the amount of seconds since the program started
-  time_t currentTime = time(0);
-  float elapsedSeconds = difftime( currentTime, TimeCodeStarted );
+  ftime( &newTime );
+  float runTime = (newTime.time + newTime.millitm / 1000.0) - (startTime.time + startTime.millitm / 1000.0);
+  //float elapsedSeconds = difftime( currentTime, TimeCodeStarted );
   
   // ADD TIME TO SCREEN
   stringstream t;
   t.setf( ios::fixed, ios::floatfield );
   t.precision(0);
-  t << "TIME:  " << elapsedSeconds;
+  t << "TIME:  " <<"     "<<runTime;
   drawStrokeString( t.str(), -0.95,0.65,0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
 
   // ADD FUEL TO SCREEN
