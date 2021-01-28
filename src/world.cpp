@@ -19,6 +19,7 @@ float dist = 0.0;
 int crash = -1;
 float crashRadius = 0.0;
 struct timeb newTime;
+float runTime;
 
 void World::updateState( float elapsedTime )
 
@@ -154,7 +155,11 @@ void World::draw()
   
   //Calculate the amount of seconds since the program started
   ftime( &newTime );
-  float runTime = (newTime.time + newTime.millitm / 1000.0) - (startTime.time + startTime.millitm / 1000.0);
+  //float runTime;
+  if (!pauseGame)
+  {
+  	runTime = (newTime.time + newTime.millitm / 1000.0) - (startTime.time + startTime.millitm / 1000.0);
+  }
   //float elapsedSeconds = difftime( currentTime, TimeCodeStarted );
   
   // ADD TIME TO SCREEN
