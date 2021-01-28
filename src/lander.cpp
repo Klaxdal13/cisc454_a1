@@ -66,15 +66,14 @@ void Lander::setupVAO()
     landerVerts[i+1] = newV.y / newV.w;
   }
 
-
-
   // ---- Create a VAO for this object ----
 
 	// YOUR CODE HERE	
 
 	// Set the Height and width of the lander	
 	height = max.y - min.y;
-	width  = max.x - min.x;
+	//width  = max.x - min.x;
+	width = LANDER_WIDTH;
   
   glGenVertexArrays( 1, &VAO );
   glBindVertexArray( VAO );

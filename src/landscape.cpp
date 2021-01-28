@@ -154,7 +154,7 @@ vec3 Landscape::findClosestPoint( vec3 position, vec3 segTail, vec3 segHead )
   float ratio = projectTailToLanderOntoTailToHead / vecTailToHead.length();
   	
   // apply this ratio to find the point that lies that ratio between segTail and segHead
-  return vec3 ( ((segHeadX - segTailX) * ratio), ((segHeadY - segTailY) * ratio), 0);
+  return vec3 ( ((segHeadX - segTailX) * ratio) + segTailX, ((segHeadY - segTailY) * ratio) + segTailY, 0);
   
   //return vec3(0,0,0);
 }

@@ -17,6 +17,7 @@
 time_t TimeCodeStarted = time(0);
 float dist = 0.0;
 int crash = -1;
+float crashRadius = 0.0;
 
 void World::updateState( float elapsedTime )
 
@@ -41,7 +42,7 @@ void World::updateState( float elapsedTime )
 
   vec3 closestTerrainPoint = landscape->findClosestPoint( lander->centrePosition() );
   float closestDistance = ( closestTerrainPoint - lander->centrePosition() ).length();
-  
+  dist = closestDistance;
 
   // Find if the view should be zoomed
 
@@ -53,10 +54,10 @@ void World::updateState( float elapsedTime )
   // the horizontal speed is less than 0.5 m/s.
 
   // YOUR CODE HERE
-  
-  if(world->getAltitudeOfLanderFromLandscape() < 1)
+  crashRadius = lander->width/2;
+  if(closestDistance < crashRadius)
   {
-  	if (((abs(lander->velocity.x) < 0.5) && (abs(lander->velocity.y) < 1.0)))
+  	if (((abs(lander->velocity.x) <= 0.5) && (abs(lander->velocity.y) <= 1.0)))
   	{
   		pauseGame = true;
   		crash = 0;
