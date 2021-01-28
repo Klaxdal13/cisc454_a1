@@ -130,7 +130,7 @@ void Lander::updatePose( float deltaT )
 // Update the thrust or orientation
 void Lander::rotateCW( float deltaT )
 {
-	if(fuel > 0)
+	if(fuel > 0) // make sure there is fuel left to use
   {
   	orientation -= ROTATION_SPEED * deltaT;
   	// YOUR CODE HERE
@@ -138,7 +138,7 @@ void Lander::rotateCW( float deltaT )
   	// reduce the amount of fuel the lander has given that it is rotating for deltaT seconds.
   	fuel -= ROTATIONAL_FUEL_CONSUMPTION * deltaT;
   }
-  else
+  else // if there is no fuel left we cannot rotate the lander
   {
   	fuel = 0;
   }
@@ -147,7 +147,7 @@ void Lander::rotateCW( float deltaT )
 
 void Lander::rotateCCW( float deltaT )
 {
-  if(fuel > 0)
+  if(fuel > 0) // make sure there is fuel left to use
   {
   	orientation += ROTATION_SPEED * deltaT;
   	// YOUR CODE HERE
@@ -155,7 +155,7 @@ void Lander::rotateCCW( float deltaT )
   	// reduce the amount of fuel the lander has given that it is rotating for deltaT seconds.
   	fuel -= ROTATIONAL_FUEL_CONSUMPTION * deltaT;
   }
-  else
+  else // if there is no fuel left we cannot rotate the lander
   {
   	fuel = 0;
   }
@@ -167,7 +167,7 @@ void Lander::addThrust( float deltaT )
 {
   // YOUR CODE HERE
   
-  if(fuel > 0)
+  if(fuel > 0) // make sure there is fuel left to use
   {
   	// reduce the amount of fuel the lander has given that it is accelerating for deltaT seconds.
   	fuel -= THRUST_FUEL_CONSUMPTION * deltaT;
@@ -185,7 +185,7 @@ void Lander::addThrust( float deltaT )
   	// apply velocity change to the velocity vector of the lander 
   	velocity = velocity + orientationVec;
   }
-  else
+  else // if there is no fuel left we cannot accelerate the lander
   {
   	fuel = 0;
   }

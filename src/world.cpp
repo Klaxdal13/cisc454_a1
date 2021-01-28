@@ -74,9 +74,12 @@ void World::updateState( float elapsedTime )
 
 int World::getAltitudeOfLanderFromLandscape()
 {
+	// find the distance to the point on the landscape directly below the lander
+	
 	float landerx = lander->centrePosition().x;
 	float landery = lander->centrePosition().y;
 	
+	// find the segment that is directly below the lander
 	vec4 segUnderLander = landscape->segmentUnderLander(lander->centrePosition());
 	
 	float segmentStartX = segUnderLander.x;
@@ -84,10 +87,13 @@ int World::getAltitudeOfLanderFromLandscape()
 	float segmentEndX		= segUnderLander.z;
 	float segmentEndY   = segUnderLander.w;
 	
+	// calculate the ratio needed to find the point on the line
 	float ratio = (landerx - segmentStartX) / (segmentEndX - segmentStartX);
 	
+	// find the Y value of that point
 	float pointOnSegmentY = ((segmentEndY - segmentStartY) * ratio) + segmentStartY;
 	
+	// return difference in Y coord between the lander and the point on the segment
 	float alt = landery - pointOnSegmentY;
 	
 	return alt;
@@ -155,12 +161,11 @@ void World::draw()
   
   //Calculate the amount of seconds since the program started
   ftime( &newTime );
-  //float runTime;
+  // if the game is paused stop the timer
   if (!pauseGame)
   {
   	runTime = (newTime.time + newTime.millitm / 1000.0) - (startTime.time + startTime.millitm / 1000.0);
   }
-  //float elapsedSeconds = difftime( currentTime, TimeCodeStarted );
   
   // ADD TIME TO SCREEN
   stringstream t;
