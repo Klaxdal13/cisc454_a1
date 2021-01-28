@@ -54,7 +54,7 @@ void World::updateState( float elapsedTime )
 
   // YOUR CODE HERE
   
-  if(world->getAltitudeOfLanderFromLandscape() < 1)
+  if(world->getAltitudeOfLanderFromLandscape() < 5)
   {
   	if (((abs(lander->velocity.x) < 0.5) && (abs(lander->velocity.y) < 1.0)))
   	{
@@ -103,7 +103,7 @@ void World::draw()
     // the bottom of the landscape BOTTOM_SPACE above the bottom edge
     // of the screen (BOTTOM_SPACE is in viewing coordinates).
 
-    float s = 2.0 / (landscape->maxX() - landscape->minX());
+    float s =2.0 / (landscape->maxX() - landscape->minX());
     
     //cout << "NOT ZOOMED" <<"\n";
 
@@ -118,14 +118,14 @@ void World::draw()
     // and is 2*ZOOM_RADIUS wide (in world coordinates).
 
     // YOUR CODE HERE
-    float s = 2.0 / (landscape->maxX() - landscape->minX());
+    float s = 2.0/(2*ZOOM_RADIUS);
     
     //cout << "ZOOMED" <<"\n";
 
     worldToViewTransform
       = translate( -1, -1 + BOTTOM_SPACE, 0 )
       * scale( s, s, 1 )
-      * translate( -landscape->minX(), -landscape->minY(), 0 );
+      * translate(ZOOM_RADIUS-lander->centrePosition().x,ZOOM_RADIUS-lander->centrePosition().y, 0 );
       
   }
 
