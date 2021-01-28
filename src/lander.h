@@ -52,7 +52,7 @@ class Lander {
       velocity = vec3( 30.0f, 0.0f, 0.0f );
     #else  // debug
       position = vec3( 762, 48, 0 );
-      velocity = vec3( 0, 40, 0 );
+      velocity = vec3( 0, 0, 0 );
     #endif
 
     orientation = 0;

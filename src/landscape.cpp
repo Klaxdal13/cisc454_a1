@@ -120,8 +120,6 @@ vec3 Landscape::findClosestPoint( vec3 position, vec3 segTail, vec3 segHead )
   // range.
 
   // YOUR CODE HERE
-  float pointOnLineX = 0;
-  float pointOnLineY = 0;
   
   float segHeadX = segHead.x;
   float segHeadY = segHead.y;
@@ -132,7 +130,7 @@ vec3 Landscape::findClosestPoint( vec3 position, vec3 segTail, vec3 segHead )
   float landerX = position.x;
   float landerY = position.y;
   
-  vec3 vecTailToHead 	 = vec3( segHeadX - segTailX, segHeadY - segTailY, 0 );
+  vec3 vecTailToHead   = vec3( segHeadX - segTailX, segHeadY - segTailY, 0 );
   vec3 vecTailToLander = vec3(  landerX - segTailX,  landerY - segTailY, 0 );
   
   vec3 vecTailToHeadNormalized = vecTailToHead.normalize(); 
@@ -144,17 +142,21 @@ vec3 Landscape::findClosestPoint( vec3 position, vec3 segTail, vec3 segHead )
   	// The projection is behind the tail so return the tail
   	return segTail;
   }
+  
   else if(projectTailToLanderOntoTailToHead > vecTailToHead.length())
   {
     // Projection is further than the Head so return the point of the head of the segment
   	return segHead;
   }
-  else
-  {
   
-  }
-
-  return vec3( pointOnLineX , pointOnLineY , 0 );
+  // the point lies some ratio between segTail and segHead
+  // need to find the ratio of distance of projection to the length of vecTailToHead
+  float ratio = projectTailToLanderOntoTailToHead / vecTailToHead.length();
+  	
+  // apply this ratio to find the point that lies that ratio between segTail and segHead
+  return vec3 ( ((segHeadX - segTailX) * ratio), ((segHeadY - segTailY) * ratio), 0);
+  
+  //return vec3(0,0,0);
 }
 
 
