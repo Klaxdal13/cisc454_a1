@@ -50,7 +50,7 @@ HERE":
 		Modify World::draw() to calculate a transform for a zoomed view.
   	[1 mark]
 
-2. 	
+2. DONE
 		Modify Landscape::findClosestPoint() to compute the point on a segment
    	that is closest to a given point. [1 mark]
 
@@ -66,28 +66,30 @@ HERE":
 		Modify Lander::addThrust() to change the lander velocity.  Use
 		THRUST_ACCEL and the current lander orientation. [1 mark]
 
-6. 	
+6. DONE but no arrows
 		Modify World::draw() to output text that shows the same information as
    	the original lunar lander game (search Google Images for this).  
    	There are six pieces of information: 
    		Score, DONE
-			Time, 
+			Time, DONE
 			Fuel, DONE
 			Altitude (above the closest ground directly below), DONE
-			Horizontal speed (with an arrow),
-   		Vertical speed (with an arrow). 		
+			Horizontal speed (with an arrow), DONE but no arrow
+   		Vertical speed (with an arrow). 	DONE but no arrow
    	[1 mark]
 
-		
+		DONE
    	You will need another function to calculate your altitude by finding
    	which landscape segment the lander is above, and calculating the
-   	distance from the *bottom* of the lander to that segment. [2 marks] DONE
+   	distance from the *bottom* of the lander to that segment. [2 marks] 
 
+		DONE
    	You will need to maintain the amount of fuel, and decrease it in
    	proportion to thrust (differently for main thrust and rotational
-   	thrust). [1 mark] DONE
+   	thrust). [1 mark]
 
-7. 	Modify World::updateState() to check for landing or collision.
+7. 	DONE
+		Modify World::updateState() to check for landing or collision.
    	Landing is successful if the vertical speed is less than 1 m/s and
    	the horizontal speed is less than 0.5 m/s.  Perform some action so
    	that the player knows whether the landing was successful, and award

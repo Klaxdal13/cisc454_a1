@@ -17,6 +17,9 @@
 time_t TimeCodeStarted = time(0);
 float dist = 0.0;
 int crash = -1;
+float crashRadius = 0.0;
+struct timeb newTime;
+float runTime;
 
 void World::updateState( float elapsedTime )
 
@@ -41,7 +44,7 @@ void World::updateState( float elapsedTime )
 
   vec3 closestTerrainPoint = landscape->findClosestPoint( lander->centrePosition() );
   float closestDistance = ( closestTerrainPoint - lander->centrePosition() ).length();
-  
+  dist = closestDistance;
 
   // Find if the view should be zoomed
 
@@ -53,10 +56,15 @@ void World::updateState( float elapsedTime )
   // the horizontal speed is less than 0.5 m/s.
 
   // YOUR CODE HERE
+<<<<<<< HEAD
   
   if(world->getAltitudeOfLanderFromLandscape() < 5)
+=======
+  crashRadius = lander->width/2;
+  if(closestDistance < crashRadius)
+>>>>>>> 3e73ca8ecc2ebb712bc40f078d79b5b619442d1b
   {
-  	if (((abs(lander->velocity.x) < 0.5) && (abs(lander->velocity.y) < 1.0)))
+  	if (((abs(lander->velocity.x) <= 0.5) && (abs(lander->velocity.y) <= 1.0)))
   	{
   		pauseGame = true;
   		crash = 0;
@@ -71,9 +79,12 @@ void World::updateState( float elapsedTime )
 
 int World::getAltitudeOfLanderFromLandscape()
 {
+	// find the distance to the point on the landscape directly below the lander
+	
 	float landerx = lander->centrePosition().x;
 	float landery = lander->centrePosition().y;
 	
+	// find the segment that is directly below the lander
 	vec4 segUnderLander = landscape->segmentUnderLander(lander->centrePosition());
 	
 	float segmentStartX = segUnderLander.x;
@@ -81,10 +92,13 @@ int World::getAltitudeOfLanderFromLandscape()
 	float segmentEndX		= segUnderLander.z;
 	float segmentEndY   = segUnderLander.w;
 	
+	// calculate the ratio needed to find the point on the line
 	float ratio = (landerx - segmentStartX) / (segmentEndX - segmentStartX);
 	
+	// find the Y value of that point
 	float pointOnSegmentY = ((segmentEndY - segmentStartY) * ratio) + segmentStartY;
 	
+	// return difference in Y coord between the lander and the point on the segment
 	float alt = landery - pointOnSegmentY;
 	
 	return alt;
@@ -151,14 +165,18 @@ void World::draw()
   drawStrokeString( ss.str(), -0.95, 0.70, 0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
   
   //Calculate the amount of seconds since the program started
-  time_t currentTime = time(0);
-  float elapsedSeconds = difftime( currentTime, TimeCodeStarted );
+  ftime( &newTime );
+  // if the game is paused stop the timer
+  if (!pauseGame)
+  {
+  	runTime = (newTime.time + newTime.millitm / 1000.0) - (startTime.time + startTime.millitm / 1000.0);
+  }
   
   // ADD TIME TO SCREEN
   stringstream t;
   t.setf( ios::fixed, ios::floatfield );
   t.precision(0);
-  t << "TIME:  " << elapsedSeconds;
+  t << "TIME:  " <<"     "<<runTime;
   drawStrokeString( t.str(), -0.95,0.65,0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
 
   // ADD FUEL TO SCREEN

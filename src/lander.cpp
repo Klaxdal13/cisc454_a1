@@ -66,15 +66,14 @@ void Lander::setupVAO()
     landerVerts[i+1] = newV.y / newV.w;
   }
 
-
-
   // ---- Create a VAO for this object ----
 
 	// YOUR CODE HERE	
 
 	// Set the Height and width of the lander	
 	height = max.y - min.y;
-	width  = max.x - min.x;
+	//width  = max.x - min.x;
+	width = LANDER_WIDTH;
   
   glGenVertexArrays( 1, &VAO );
   glBindVertexArray( VAO );
@@ -131,21 +130,35 @@ void Lander::updatePose( float deltaT )
 // Update the thrust or orientation
 void Lander::rotateCW( float deltaT )
 {
-  orientation -= ROTATION_SPEED * deltaT;
-  // YOUR CODE HERE
+	if(fuel > 0) // make sure there is fuel left to use
+  {
+  	orientation -= ROTATION_SPEED * deltaT;
+  	// YOUR CODE HERE
   
-  // reduce the amount of fuel the lander has given that it is rotating for deltaT seconds.
-  fuel -= ROTATIONAL_FUEL_CONSUMPTION * deltaT;
+  	// reduce the amount of fuel the lander has given that it is rotating for deltaT seconds.
+  	fuel -= ROTATIONAL_FUEL_CONSUMPTION * deltaT;
+  }
+  else // if there is no fuel left we cannot rotate the lander
+  {
+  	fuel = 0;
+  }
 }
 
 
 void Lander::rotateCCW( float deltaT )
 {
-  orientation += ROTATION_SPEED * deltaT;
-
-  // YOUR CODE HERE
-  // reduce the amount of fuel the lander has given that it is rotating for deltaT seconds.
-	fuel -= ROTATIONAL_FUEL_CONSUMPTION * deltaT;
+  if(fuel > 0) // make sure there is fuel left to use
+  {
+  	orientation += ROTATION_SPEED * deltaT;
+  	// YOUR CODE HERE
+  
+  	// reduce the amount of fuel the lander has given that it is rotating for deltaT seconds.
+  	fuel -= ROTATIONAL_FUEL_CONSUMPTION * deltaT;
+  }
+  else // if there is no fuel left we cannot rotate the lander
+  {
+  	fuel = 0;
+  }
 }
 
 
@@ -154,24 +167,28 @@ void Lander::addThrust( float deltaT )
 {
   // YOUR CODE HERE
   
-  // reduce the amount of fuel the lander has given that it is accelerating for deltaT seconds.
-  fuel -= THRUST_FUEL_CONSUMPTION * deltaT;
+  if(fuel > 0) // make sure there is fuel left to use
+  {
+  	// reduce the amount of fuel the lander has given that it is accelerating for deltaT seconds.
+  	fuel -= THRUST_FUEL_CONSUMPTION * deltaT;
   
-  // orientation vector of unit length
-  vec3 orientationVec = vec3( -1 * sin(orientation), cos(orientation) , 0 );
+  	// orientation vector of unit length
+  	vec3 orientationVec = vec3( -1 * sin(orientation), cos(orientation) , 0 );
   
-  float magnitudeChange = THRUST_ACCEL * deltaT;
+  	float magnitudeChange = THRUST_ACCEL * deltaT;
   
-  // change the magnitude of the orientation vector given our velocity.
+  	// change the magnitude of the orientation vector given our velocity.
   
-  orientationVec.x = orientationVec.x * magnitudeChange;
-  orientationVec.y = orientationVec.y * magnitudeChange;
+  	orientationVec.x = orientationVec.x * magnitudeChange;
+  	orientationVec.y = orientationVec.y * magnitudeChange;
   
-  // apply velocity change to the velocity vector of the lander 
-  velocity = velocity + orientationVec;
-  
-  
-  
+  	// apply velocity change to the velocity vector of the lander 
+  	velocity = velocity + orientationVec;
+  }
+  else // if there is no fuel left we cannot accelerate the lander
+  {
+  	fuel = 0;
+  }
 }
 
 

@@ -130,33 +130,32 @@ vec3 Landscape::findClosestPoint( vec3 position, vec3 segTail, vec3 segHead )
   float landerX = position.x;
   float landerY = position.y;
   
+  // obtain vectors needed for projection
   vec3 vecTailToHead   = vec3( segHeadX - segTailX, segHeadY - segTailY, 0 );
   vec3 vecTailToLander = vec3(  landerX - segTailX,  landerY - segTailY, 0 );
   
+  // normalize the vector representing the line segment
   vec3 vecTailToHeadNormalized = vecTailToHead.normalize(); 
   
+  // get the dot product of the tailToLander Vector onto the normalized tailToHead vector
   float projectTailToLanderOntoTailToHead = (vecTailToHeadNormalized.x * vecTailToLander.x) + (vecTailToHeadNormalized.y * vecTailToLander.y);
   
-  if(projectTailToLanderOntoTailToHead < 0)
+  // The projection is behind the tail so return the tail
+  if(projectTailToLanderOntoTailToHead < 0) 
   {
-  	// The projection is behind the tail so return the tail
   	return segTail;
   }
-  
-  else if(projectTailToLanderOntoTailToHead > vecTailToHead.length())
+  // The projection is further than the head so return the head
+  else if(projectTailToLanderOntoTailToHead > vecTailToHead.length()) 
   {
-    // Projection is further than the Head so return the point of the head of the segment
   	return segHead;
   }
   
-  // the point lies some ratio between segTail and segHead
-  // need to find the ratio of distance of projection to the length of vecTailToHead
+  // the point lies some ratio between segTail and segHead will be some fraction of the total length of the vector
   float ratio = projectTailToLanderOntoTailToHead / vecTailToHead.length();
   	
   // apply this ratio to find the point that lies that ratio between segTail and segHead
-  return vec3 ( ((segHeadX - segTailX) * ratio), ((segHeadY - segTailY) * ratio), 0);
-  
-  //return vec3(0,0,0);
+  return vec3 ( ((segHeadX - segTailX) * ratio) + segTailX, ((segHeadY - segTailY) * ratio) + segTailY, 0);
 }
 
 
@@ -188,25 +187,30 @@ vec3 Landscape::findClosestPoint( vec3 position )
   return closestPoint;
 }
 
+// find the segment on the landscape that contains the x position of the lander
 vec4 Landscape::segmentUnderLander( vec3 position )
 {	
 	float segmentStartX = 0.0;
 	float segmentStartY = 0.0;
-	float segmentEndX		= 0.0;
+	
+	float segmentEndX   = 0.0;
 	float segmentEndY   = 0.0;
 	
 	float landerXLoc = position.x;
 	
-	for (int i=0; i<numVerts-1; i++) 
+	for (int i=0; i<numVerts-1; i++) // check all segments incrementally
 	{
+		// check to see if the x position of the lander is in the range of the segment
 		if( ( landscapeVerts[2*i] < landerXLoc ) && ( landerXLoc <  landscapeVerts[2*(i+1)]) )
 		{
 			segmentStartX = landscapeVerts[2*i];
 			segmentStartY = landscapeVerts[2*i+1];
-			segmentEndX		= landscapeVerts[2*(i+1)];
+			segmentEndX   = landscapeVerts[2*(i+1)];
 			segmentEndY   = landscapeVerts[2*(i+1)+1];
 		}
   }
+  
+  // return the 4 values that make up the segment under the lander
 	return vec4( segmentStartX , segmentStartY , segmentEndX , segmentEndY );
 }
 
