@@ -42,7 +42,12 @@ class World {
   int getAltitudeOfLanderFromLandscape();
   
   void resetLander() {
-    lander->reset();
+    lander->reset();    // reset the lander
+    pauseGame = false;  // unpause the same
+    showMsg = NULL;	// set the message to NULL
+    struct timeb NEWstartTime;
+    ftime(&NEWstartTime);
+    startTime = NEWstartTime; // reset time to start at 0
   }
 
   // World extremes (in world coordinates)

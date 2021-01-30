@@ -9,14 +9,9 @@
 
 #include <sstream>
 #include <iomanip>
-#include <time.h>
 
 //const float textAspect = 0.7;	// text width-to-height ratio (you can use this for more realistic text on the screen)
 
-
-time_t TimeCodeStarted = time(0);
-float dist = 0.0;
-int crash = -1;
 float crashRadius = 0.0;
 struct timeb newTime;
 float runTime;
@@ -44,7 +39,6 @@ void World::updateState( float elapsedTime )
 
   vec3 closestTerrainPoint = landscape->findClosestPoint( lander->centrePosition() );
   float closestDistance = ( closestTerrainPoint - lander->centrePosition() ).length();
-  dist = closestDistance;
 
   // Find if the view should be zoomed
 
@@ -56,44 +50,47 @@ void World::updateState( float elapsedTime )
   // the horizontal speed is less than 0.5 m/s.
 
   // YOUR CODE HERE
-  crashRadius = lander->width/2;
+  crashRadius = (lander->width / 2) + 0.5;
+  
   if(closestDistance < crashRadius)
   {
   	if (((abs(lander->velocity.x) <= 0.5) && (abs(lander->velocity.y) <= 1.0)))
   	{
+  	  // SUCCESSFUL LANDING !!!
   		pauseGame = true;
-  		crash = 0;
+  		world->showMsg = "SUCCESSFUL LANDING";
   	}
   	else
   	{
+  	  // CRASH LANDING !!!
   		pauseGame = true;
-  		crash = 1;
+  		world->showMsg = "CRASH LANDING";
   	}
   }
 }
 
 int World::getAltitudeOfLanderFromLandscape()
 {
-	// find the distance to the point on the landscape directly below the lander
-	
+	// Find the distance to the point on the landscape directly below the lander
 	float landerx = lander->centrePosition().x;
 	float landery = lander->centrePosition().y;
 	
 	// find the segment that is directly below the lander
 	vec4 segUnderLander = landscape->segmentUnderLander(lander->centrePosition());
 	
+	// Points that define the line under the lander
 	float segmentStartX = segUnderLander.x;
 	float segmentStartY = segUnderLander.y;
 	float segmentEndX		= segUnderLander.z;
 	float segmentEndY   = segUnderLander.w;
 	
-	// calculate the ratio needed to find the point on the line
+	// Calculate the ratio needed to find the point on the line
 	float ratio = (landerx - segmentStartX) / (segmentEndX - segmentStartX);
 	
-	// find the Y value of that point
+	// Find the Y value of that point
 	float pointOnSegmentY = ((segmentEndY - segmentStartY) * ratio) + segmentStartY;
 	
-	// return difference in Y coord between the lander and the point on the segment
+	// Return difference in Y coord between the lander and the point on the segment
 	float alt = landery - pointOnSegmentY;
 	
 	return alt;
@@ -113,8 +110,6 @@ void World::draw()
     // of the screen (BOTTOM_SPACE is in viewing coordinates).
 
     float s = 2.0 / (landscape->maxX() - landscape->minX());
-    
-    //cout << "NOT ZOOMED" <<"\n";
 
     worldToViewTransform
       = translate( -1, -1 + BOTTOM_SPACE, 0 )
@@ -127,14 +122,13 @@ void World::draw()
     // and is 2*ZOOM_RADIUS wide (in world coordinates).
 
     // YOUR CODE HERE
-    float s = 2.0 / (landscape->maxX() - landscape->minX());
     
-    //cout << "ZOOMED" <<"\n";
+    float s = 2.0/(2*ZOOM_RADIUS);
 
     worldToViewTransform
       = translate( -1, -1 + BOTTOM_SPACE, 0 )
       * scale( s, s, 1 )
-      * translate( -landscape->minX(), -landscape->minY(), 0 );
+      * translate(ZOOM_RADIUS-lander->centrePosition().x,ZOOM_RADIUS-lander->centrePosition().y, 0 );
       
   }
 
@@ -161,6 +155,7 @@ void World::draw()
   
   //Calculate the amount of seconds since the program started
   ftime( &newTime );
+  
   // if the game is paused stop the timer
   if (!pauseGame)
   {
@@ -171,7 +166,7 @@ void World::draw()
   stringstream t;
   t.setf( ios::fixed, ios::floatfield );
   t.precision(0);
-  t << "TIME:  " <<"     "<<runTime;
+  t << "TIME:  " <<runTime;
   drawStrokeString( t.str(), -0.95,0.65,0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
 
   // ADD FUEL TO SCREEN
@@ -180,21 +175,6 @@ void World::draw()
   f.precision(0);
   f << "FUEL:  " << lander->fuel;
   drawStrokeString( f.str(), -0.95,0.60, 0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
-  
-  // ADD LANDER'S X COORDINATE TO SCREEN
-  stringstream lx;
-  lx.setf( ios::fixed, ios::floatfield );
-  lx.precision(0);
-  lx << "LANDER X:  " << lander->centrePosition().x;
-  drawStrokeString( lx.str(), -0.95,0.55,0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
-  
-  // ADD LANDER'S Y COORDINATE TO SCREEN
-  stringstream ly;
-  ly.setf( ios::fixed, ios::floatfield );
-  ly.precision(0);
-  ly << "LANDER Y:  " << lander->centrePosition().y;
-  drawStrokeString( ly.str(), -0.95,0.50,0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
-  
   
   // ADD ALTITUDE TO SCREEN
   stringstream alt;
@@ -217,24 +197,9 @@ void World::draw()
   vs << "VERTICAL SPEED:   " << abs(lander->velocity.y);
   drawStrokeString( vs.str(), 0.25, 0.60, 0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
   
-  stringstream cp;
-  cp.setf( ios::fixed, ios::floatfield );
-  cp.precision(0);
-  cp << "CLOSEST DIST:   " << dist;
-  drawStrokeString( cp.str(), 0.25, 0.55, 0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
-  
-  if(crash == 1)
-  {
-  	stringstream crash;
-  	crash.setf( ios::fixed, ios::floatfield );
-  	crash << "!!!CRASH LANDING!!!";
-  	drawStrokeString( crash.str(), -0.35, 0.2, 0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
-  }
-  if(crash == 0)
-  {
-  	stringstream success;
-  	success.setf( ios::fixed, ios::floatfield );
-  	success << "!!!SUCCESSFUL LANDING!!!";
-  	drawStrokeString( success.str(), -0.35, 0.2, 0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
-  }  
+  stringstream endGame;
+  endGame.setf( ios::fixed, ios::floatfield );
+  endGame << showMsg;
+  drawStrokeString( endGame.str(), -0.35, 0.2, 0.04, glGetUniformLocation( myGPUProgram->id(), "MVP") );
+
 }

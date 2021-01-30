@@ -13,7 +13,7 @@
 // We also have rotation without rotational inertia (as in the original game).
 
 #define ROTATION_SPEED 0.4	          		// upon sidewise thrust, rotation speed in radians/second
-#define THRUST_ACCEL 4.0                  // upon main thrust, acceleration in m/s/s
+#define THRUST_ACCEL 10.0                  // upon main thrust, acceleration in m/s/s
 #define GRAVITY vec3( 0, -1.6, 0 )        // gravity acceleration on the moon is 1.6 m/s/s
 #define LANDER_WIDTH 10                  	// the real lander is about 6.7 m wide, not 10m
 
@@ -72,7 +72,6 @@ void Lander::setupVAO()
 
 	// Set the Height and width of the lander	
 	height = max.y - min.y;
-	//width  = max.x - min.x;
 	width = LANDER_WIDTH;
   
   glGenVertexArrays( 1, &VAO );
